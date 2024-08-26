@@ -22,12 +22,17 @@ const AdminModel = sequelize.define('Admin', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    admin_password: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
     admin_phone: {
         type: DataTypes.STRING,
         allowNull: false
     },
     hire_date: {
         type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW, // Automatically set to the current date and time
         allowNull: false
     }
 });
@@ -44,6 +49,10 @@ const CustomerModel = sequelize.define('Customer', {
         allowNull: false
     },
     customer_mail: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+    customer_password: {
         type: DataTypes.STRING,
         allowNull: false
     },
@@ -99,10 +108,15 @@ const OrderModel = sequelize.define('Order', {
     },
     order_date: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: false,
+        defaultValue: new Date()
     },
-    total: {
-        type: DataTypes.FLOAT,
+    customer_id: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: CustomerModel,
+            key: 'customer_id'
+        },
         allowNull: false
     }
 });
@@ -124,6 +138,11 @@ const ItemModel = sequelize.define('Item', {
 CustomerModel.hasMany(OrderModel, {
     foreignKey: 'customer_id',  // Foreign key in table Order
     as: 'orders'                // Alias
+});
+
+OrderModel.belongsTo(CustomerModel, {
+    foreignKey: 'customer_id',
+    as: 'customer'
 });
 
 OrderModel.hasMany(ItemModel, {
