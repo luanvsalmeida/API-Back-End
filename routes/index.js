@@ -28,7 +28,7 @@ router.get('/install', async function(req, res, next) {
     await Book.insert(BooksData.titles[i], BooksData.authors[i],BooksData.prices[i], BooksData.stocks[i], BooksData.publicationDates[i], BooksData.genres[i]);
   }
   for (let i = 1; i <= 5; i++)
-    await Order.insert(new Date(), i);
+    await Order.insert(i);
 
   for (let i = 0; i < 10; i++)
       await Item.insert(ItemsData.quantities[i], ItemsData.order_id[i], ItemsData.book_id[i]);
@@ -46,6 +46,30 @@ router.post('/signUp', async (req, res) => {
     res.status(201).json({message: 'Customer created successfully', customer});
   } catch (error) {
     res.status(400).json({error: 'Failed to create customer'})
+  }
+});
+
+// Read books
+router.get('/getBooks', async (req, res) => {
+  let {page, limit} = req.query;
+
+  page = parseInt(page);
+  limit = parseInt(limit);
+
+  if (!page || isNaN(page) || page <= 0) {
+      return res.status(400).json({msg: "Invalid parameter for page"});
+  }
+
+  if (limit !== 5 && limit !== 10 && limit !== 30) {
+      return res.status(400).json({msg: "Invalid parameter for limit"});
+  }
+
+  try {
+      let books = await Book.getByPage(page, limit);
+      res.status(200).json({message: "Data retrieved successfully", books});
+  } catch (error) {
+      console.error(error);
+      res.status(400).json({error: "Failed to retrieve data"});
   }
 });
 

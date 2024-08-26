@@ -29,8 +29,10 @@ module.exports = {
             limit: limit,               // Amount of rows to return
             offset: limit * (page - 1)  // Starting point
         });
-    }
-    
-
+    },
+    // Update method 
+    updateById: async (id, updatedData) => {
+        return await AdminModel.update(updatedData, { where: {admin_id: id}});
+    }    
 
 }

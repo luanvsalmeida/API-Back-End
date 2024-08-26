@@ -21,13 +21,18 @@ module.exports = {
     },
 
     getByLogin: async (mail, password) => {   
-        let customer = await CustomerModel.findAll({ where: { customer_mail: mail, customer_password: password } });
-        console.log('hello');
-        return customer;
+        return await CustomerModel.findAll({ where: { customer_mail: mail, customer_password: password } });
     },
 
     getAll: async () => {
         return await CustomerModel.findAll();
+    },
+
+    getByPage: async (page, limit) => {
+        return await CustomerModel.findAll({
+            limit: limit,               // Amount of rows to return
+            offset: limit * (page - 1)  // Starting point
+        });
     }
     
 }

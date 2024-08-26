@@ -15,6 +15,13 @@ module.exports = {
     // Read method 
     getById: async (id) => {
         return await BookModel.findByPk(id);
+    },
+
+    getByPage: async (page, limit) => {
+        return await BookModel.findAll({
+            limit: limit,               // Amount of rows to return
+            offset: limit * (page - 1)  // Starting point
+        });
     }
     
 }

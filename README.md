@@ -61,11 +61,11 @@ rota: /api/user/signIn
 
 Exemplo de conteúdo JSON para o body:
 {
-    mail: "elshadday@mail.com"
-    password: "elshadday123"
+    "mail": "al.capone@mail.com"
+    "password": "capone123"
 }
 
-### Criar Admin
+### Criar Admininstrador ('/api/admin/newAdmin')
 Exemplo de conteúdo JSON para o body
 {
     "name": "Gollum",
@@ -75,3 +75,31 @@ Exemplo de conteúdo JSON para o body
     "password": "gollum123"
 }
 
+### Atualizar Administrador ('/api/admin/updateAdmin')
+Exemplo de conteúdo JSON para o body
+{
+    "id": 2,
+    "name": "Zlatan Ibrahimovic",
+    "mail": "zlatan@mail.com",
+    "phone": "+55 11 99821-2133",
+    "hireDate": "2024-02-21T12:34:56Z",
+    "password": "zlatan123"
+}
+
+
+### Gerar Compra 
+#### Método 1 Adicionar ao carrinho
+Exemplo de conteúdo JSON para o body
+{
+    "customer_id": 0,
+    "items": [
+        {
+            "book_id": 3,
+            "quantity": 1
+        },
+        {
+            "booke_id": 2,
+            "quantity": 1
+        }
+    ]
+}

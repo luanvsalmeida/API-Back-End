@@ -9,9 +9,16 @@ module.exports = {
             book_id: book_id
         });
     },
-    // Read method 
+    // Read methods 
     getById: async (id) => {
         return await ItemModel.findByPk(id);
+    },
+
+    getByPage: async (page, limit) => {
+        return await ItemModel.findAll({
+            limit: limit,               // Amount of rows to return
+            offset: limit * (page - 1)  // Starting point
+        });
     }
     
 }
