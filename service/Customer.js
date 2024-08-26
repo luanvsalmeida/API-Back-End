@@ -33,6 +33,16 @@ module.exports = {
             limit: limit,               // Amount of rows to return
             offset: limit * (page - 1)  // Starting point
         });
+    },
+
+    // Update method
+    updateById: async(id, updatedData) => {
+        return await CustomerModel.update(updatedData, {where: {customer_id: id}});
+    },
+
+    // Delete method
+    deleteById: async (id) => {
+        return await CustomerModel.destroy({where: {customer_id: id}});
     }
     
 }

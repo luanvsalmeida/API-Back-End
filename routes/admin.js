@@ -5,7 +5,7 @@ const AdminDAO = require('../service/Admin');
 const CustomerDAO = require('../service/Customer');
 const OrderDAO = require('../service/Order');
 const ItemDAO = require('../service/Item');
-const Admin = require('../service/Admin');
+const BookDAO = require('../service/Book');
 
 /**** Administrator operations ****/
 // Create Admin Route
@@ -76,23 +76,43 @@ router.put('/updateAdmin', async (req,res) => {
     }
     try {
         const rowsUpdated = await AdminDAO.updateById(id, updatedAdmin);
-        if (rowsUpdated[0] === 0) {
-            res.status(404).json({msg: "User not found"});
+        if (rowsUpdated[0] === 0) {     // Checks if any row changed
+            res.status(404).json({msg: "Administrator not found"});
         }
         const admin = await AdminDAO.getById(id);
-        res.status(200).json({msg: "User updated successfully", admin: admin});
+        res.status(200).json({msg: "Administrator updated successfully", admin: admin});
     } catch (error) {
         res.status(500).json({error: "Failed to update data"});
     }
 });
 
-// Delete Admin Route
-router.delete('/deleteAdmin', async (req, res) => {
-
+// Delete Admin route
+router.delete('/deleteAdmin/:id', async (req, res) => {
+    let {id} = req.params;
+    try {
+        const rowsDeleted = await AdminDAO.deleteById(id);
+        if (rowsDeleted[0] === 0) {      // Checks if any row was deteled
+            res.status(404).json({msg: "Administrator not found"});
+        }
+        res.status(200).json({msg: "Administrator deleted with success"});
+    } catch (error) {
+        res.status(500).json({error: "Failed to delete data"});
+    }
 });
 
 /**** Customer related operations ****/
-// Read User
+// Create User
+router.post('/createCustomer', async (req, res) => {
+    try {
+        let {name, mail, password, phone, address} = req.body;
+        const customer = await CustomerDAO.insert(name, mail, password, phone, address);
+        res.status(201).json({message: 'Customer created successfully', customer});
+      } catch (error) {
+        res.status(400).json({error: 'Failed to create customer'})
+      }
+});
+
+// Read customer with pagination
 router.get('/getCustomers', async (req, res) => {
     let {page, limit} = req.query;
 
@@ -116,11 +136,55 @@ router.get('/getCustomers', async (req, res) => {
     }
 });
 
-// Update User 
+// Read customer by id
+router.get('/getCustomer/:id', async (req, res) => {
+    let {id} = req.params;
+    const user  = await CustomerDAO.getById(id);
+    if(!user) {             // Check if the user exists
+        res.status(404).json({msg: "User not found"});
+    }
+    else {
+        res.status(200).json({customer: user});
+    }
 
+}); 
+
+// Update User 
+router.put('/updateCustomer/:id', async (req, res) => {
+    let {id} = req.params;
+    let {name, mail, phone, address, password} = req.body;
+    let updatedCustomer = {
+        customer_name: name,
+        customer_mail: mail,
+        customer_phone: phone,
+        customer_address: address,
+        customer_password: password
+    }
+    try {
+        const rowsUpdated = await CustomerDAO.updateById(id, updatedCustomer);
+        if(rowsUpdated[0] === 0) {     // Checks if any row changed
+            res.status(404).json({msg: "Administrator not found"});
+        }
+        const customer = await CustomerDAO.getById(id);
+        res.status(200).json({msg: "Customer updated successfully", customer: customer });
+    } catch (error) {
+        res.status(500).json({error: "Failed to update data"});
+    }
+});
 
 // Delete User
-
+router.delete('/deleteCustomer/:id', async (req, res) => {
+    let {id} = req.params;
+    try {
+        const rowsDeleted = await CustomerDAO.deleteById(id);
+        if (rowsDeleted[0] === 0) {     // Checks if any row was deleted
+            res.status(404).json({msg: "Customer not found"});
+        }
+        res.status(200).json({msg: "Customer deleted with success"});
+    } catch (error) {
+        res.status(500).json({error: "Failed to delete data"});
+    }
+});
 
 /**** Books operations ****/
 // Create Book

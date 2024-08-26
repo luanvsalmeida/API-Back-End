@@ -65,6 +65,16 @@ Exemplo de conteúdo JSON para o body:
     "password": "capone123"
 }
 
+### Atualizar Usuário pelo administrador ('api/admin/updateCustomer/:id')
+Exemplo de conteúdo JSON para o body
+{
+    "name": "Thorin Oakenshield",
+    "mail": "oakenshield@mail.com",
+    "phone": "+55 41 99432-1762",
+    "address": "1234 Elm Street, Dublin, D01 XY23, Ireland",
+    "password": "thorin123"
+}
+
 ### Criar Admininstrador ('/api/admin/newAdmin')
 Exemplo de conteúdo JSON para o body
 {
@@ -74,6 +84,7 @@ Exemplo de conteúdo JSON para o body
     "hire-date": "2024-08-22T12:34:56Z",
     "password": "gollum123"
 }
+
 
 ### Atualizar Administrador ('/api/admin/updateAdmin')
 Exemplo de conteúdo JSON para o body
