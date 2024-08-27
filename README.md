@@ -97,6 +97,31 @@ Exemplo de conteúdo JSON para o body
     "password": "zlatan123"
 }
 
+### Criar Livro
+Exemplo de JSON para o body: 
+{
+    "book_title": "The Lion, the Witch and the Wardrobe",
+    "author": "C.S. Lewis",
+    "price": 12.99,
+    "stock": 25,
+    "publication_date": "1950-10-16",
+    "genre": "Fantasy"
+}
+
+### Criar Pedido (Administrador)
+Exemplo de JSON para o body: 
+{
+    "customer_id": 2
+}
+
+### Criar Item do pedido (Administrador)
+Exemplo de JSON para o body:
+{
+    "quantity": 1,
+    "book_id": 3,
+    "order_id": 1
+}
+
 
 ### Gerar Compra 
 #### Método 1 Adicionar ao carrinho

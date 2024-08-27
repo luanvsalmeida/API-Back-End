@@ -22,6 +22,16 @@ module.exports = {
             limit: limit,               // Amount of rows to return
             offset: limit * (page - 1)  // Starting point
         });
+    },
+
+    // Update method
+    updateById: async (updatedBook, id) => {
+        return await BookModel.update(updatedBook, {where: {book_id: id}});
+    },
+
+    //Delete method
+    deleteById: async (id) => {
+        return await BookModel.destroy({where: {book_id: id}});
     }
     
 }

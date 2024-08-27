@@ -30,7 +30,7 @@ router.get('/selectAllAdmin', async (req, res) => {
     
 });
 
-// Read Admin with the pages and collumns defined (Untested)
+// Read Admin with the pages and collumns defined 
 router.get('/getAdmins', async (req, res) => {
     let {page, limit} = req.query;
 
@@ -91,7 +91,7 @@ router.delete('/deleteAdmin/:id', async (req, res) => {
     let {id} = req.params;
     try {
         const rowsDeleted = await AdminDAO.deleteById(id);
-        if (rowsDeleted[0] === 0) {      // Checks if any row was deteled
+        if (rowsDeleted === 0) {      // Checks if any row was deteled
             res.status(404).json({msg: "Administrator not found"});
         }
         res.status(200).json({msg: "Administrator deleted with success"});
@@ -177,7 +177,7 @@ router.delete('/deleteCustomer/:id', async (req, res) => {
     let {id} = req.params;
     try {
         const rowsDeleted = await CustomerDAO.deleteById(id);
-        if (rowsDeleted[0] === 0) {     // Checks if any row was deleted
+        if (rowsDeleted === 0) {     // Checks if any row was deleted
             res.status(404).json({msg: "Customer not found"});
         }
         res.status(200).json({msg: "Customer deleted with success"});
@@ -189,26 +189,89 @@ router.delete('/deleteCustomer/:id', async (req, res) => {
 /**** Books operations ****/
 // Create Book
 router.post('/newBook', async (req, res) => {
-
+    let {title, author, price, stock, publication_date, genre} = req.body;
+    try {
+        const book = await BookDAO.insert(title, author, price, stock, publication_date, genre);
+        res.status(201).json({message: "Book created successfully", book: book});
+    } catch (error) {
+        res.status(400).json({error: "Failed to insert book"});
+    }
 });
 
-// Read Book more likely to be in non authenticated router
+// Read Book with pagination more likely to be in non authenticated router
 router.get('/selectBook', async (req, res) => {
+    let {page,limit} = req.query;
 
+    page = parseInt(page);
+    limit = parseInt(limit);
+
+    if (!page || isNaN(page) || page <= 0) {
+        return res.status(400).json({msg: "Invalid parameter for page"});
+    }
+
+    if (limit !== 5 && limit !== 10 && limit !== 30) {
+        return res.status(400).json({msg: "Invalid parameter for limit"});
+    }
+
+    try {
+        let books = await BookDAO.getByPage(page, limit);
+        res.status(200).json({message: "Data retrieved successfully", books});
+    } catch (error) {
+        res.status(400).json({error: "Failed to retrieve data"});
+    }
 });
 
 
 // Update Book
-router.put('/updateBook', async (req, res) => {
-
+router.put('/updateBook/:id', async (req, res) => {
+    let {id} = req.params;
+    let {title, author, price, stock, publication_date, genre} = req.body;
+    let updatedBook = {
+        book_title: title,
+        author: author,
+        price: price,
+        stock: stock,
+        publication_date, publication_date,
+        genre: genre
+    }
+    try {
+        const rowsUpdated = await BookDAO.updateById(updatedBook, id);
+        if (rowsUpdated[0] === 0) {
+            res.status(404).json({msg: "Book not found"});
+        }
+        const book = await BookDAO.getById(id);
+        res.status(200).json({msg: "Book updated successfully", Book: book});
+    } catch (error) {
+        res.status(500).json({error: "Failed to update data"});    
+    }
 });
 
 // Delete Book
-router.delete('/deleteBook', async (req, res) => {
-
+router.delete('/deleteBook/:id', async (req, res) => {
+    let {id} = req.params;
+    try{ 
+        const rowsDeleted = await BookDAO.deleteById(id);
+        if (rowsDeleted === 0) {     // Checks if any row was deleted
+            res.status(404).json({msg: "Book not found"});
+        }
+        res.status(200).json({msg: "Book deleted successfully"});
+    } catch (error) {
+        res.status(500).json({error: "Failed to delete data"});
+    }
 });
 
 /**** Order related operations ****/
+// Create order (for any user)
+router.post('/newOrder', async (req, res) => {
+    let {customer_id} = req.body;
+    try {
+        const order = await OrderDAO.insert(customer_id);
+        res.status(201).json({message: "Order created successfully", order});
+    } catch (error) {
+        res.status(400).json({error: "Failed to create order"});
+    }
+});
+
 // Read Orders
 router.get('/getOrders', async (req, res) => {
     let {page, limit} = req.query;
@@ -234,12 +297,53 @@ router.get('/getOrders', async (req, res) => {
 });
 
 // Update Orders
-
+router.put('/updateOrder/:id', async (req, res) => {
+    let {id} = req.params;
+    let {customer_id, date} = req.body;
+    let updatedOrder = {
+        customer_id: customer_id,
+        order_date: date
+    }
+    try {
+        const rowsUpdated = await OrderDAO.updateById(updatedOrder, id);
+        if (rowsUpdated[0] === 0) {
+            res.status(404).json({msg: "Order not found"});
+        }
+        const order = await OrderDAO.getById(id);
+        res.status(200).json({msg: "Order updated successfully", Order: order});
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({error: "Failed to update data"});    
+    }
+});
 
 // Delete Order
-
+router.delete('/deleteOrder/:id', async (req, res) => {
+    let {id} = req.params;
+    try{ 
+        const rowsDeleted = await OrderDAO.deleteById(id);
+        if (rowsDeleted === 0) {     // Checks if any row was deleted
+            res.status(404).json({msg: "Order not found"});
+        }
+        res.status(200).json({msg: "Order deleted successfully"});
+    } catch (error) {
+        res.status(500).json({error: "Failed to delete data"});
+    }
+});
 
 /**** Items related operations ****/
+// Create Item (for any order)
+router.post('/newItem', async (req, res) => {
+    let {quantity, order_id, book_id} = req.body;
+    try {
+        const item = await ItemDAO.insert(quantity, order_id, book_id);
+        res.status(201).json({message: "Item created successfully", item});
+    } catch (error) {
+        res.status(400).json({error: "Failed to create item"});
+    }
+});
+
+
 // Read Items
 router.get('/getItems', async (req, res) => {
     let {page, limit} = req.query;
@@ -265,9 +369,41 @@ router.get('/getItems', async (req, res) => {
 });
 
 // Update Items
+router.put('/updateItem/:id', async (req, res) => {
+    let { id } = req.params;
+    let { quantity, order_id, book_id } = req.body;
+    let updatedItem = {
+        quantity: quantity,
+        order_id: order_id,
+        book_id: book_id
+    };
+    try {
+        const rowsUpdated = await ItemDAO.updateById(id, updatedItem);
+        if (rowsUpdated[0] === 0) { // Check if any row was changed
+            return res.status(404).json({ msg: "Item not found" });
+        }
+        const item = await ItemDAO.getById(id);
+        return res.status(200).json({ msg: "Item updated successfully", Item: item });
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: "Failed to update data" });
+    }
+});
 
 
 // Delete Items
+router.delete('/deleteItem/:id', async (req, res) => {
+    let {id} = req.params;
+    try{ 
+        const rowsDeleted = await ItemDAO.deleteById(id);
+        if (rowsDeleted === 0) {     // Checks if any row was deleted
+            res.status(404).json({msg: "Item not found"});
+        }
+        res.status(200).json({msg: "Item deleted successfully"});
+    } catch (error) {
+        res.status(500).json({error: "Failed to delete data"});
+    }
+});
 
 
 module.exports = router;

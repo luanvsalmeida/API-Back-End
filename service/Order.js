@@ -20,8 +20,12 @@ module.exports = {
         });
     },
     // Update method
-    update: async (order, id) => {
-        return await OrderModel.update(order, { where: { id: id } });
+    updateById: async (order, id) => {
+        return await OrderModel.update(order, { where: { order_id: id } });
+    },
+
+    // Delete method
+    deleteById: async (id) => {
+        return await OrderModel.destroy({where: {order_id: id}});
     }
-    
 }
