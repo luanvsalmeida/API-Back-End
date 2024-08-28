@@ -20,7 +20,8 @@ const AdminModel = sequelize.define('Admin', {
     },
     admin_mail: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     admin_password: {
         type: DataTypes.STRING,
@@ -50,7 +51,8 @@ const CustomerModel = sequelize.define('Customer', {
     },
     customer_mail: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
     },
     customer_password: {
         type: DataTypes.STRING,
@@ -118,6 +120,12 @@ const OrderModel = sequelize.define('Order', {
             key: 'customer_id'
         },
         allowNull: false
+    },
+    // Define if the order is open or not
+    is_Open: {                  
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: true
     }
 });
 

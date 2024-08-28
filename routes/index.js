@@ -1,7 +1,8 @@
+require('dotenv').config();
 var express = require('express');
 var router = express.Router();
 router.use(express.json());
-;
+var jwt = require('jsonwebtoken');
 const { sequelize } = require('../model/db');
 const Admin = require('../service/Admin');
 const Customer = require('../service/Customer');
@@ -10,13 +11,11 @@ const Item = require('../service/Item');
 const Order = require('../service/Order');
 const { BooksData, CustomersData, ItemsData } = require('../helpers/installData');
 
+
 // Database installation and first insertion
 router.get('/install', async function(req, res, next) {
   // Create database
   await sequelize.sync({ force: true });
-
-  // Values to insert
-
 
   // Insert values
   let admin = await Admin.insert('Mario Gotze', 'mariogotze@mail.com', '+55 11 94232-2313', '2024-08-22T12:34:56Z', 'gotze123');
@@ -42,10 +41,20 @@ router.get('/install', async function(req, res, next) {
 router.post('/signUp', async (req, res) => {
   try {
     let {name, mail, password, phone, address} = req.body;
-    const customer = await Customer.insert(name, mail, password, phone, address);
+    const customer = await Customer.insert(name, mail, phone, address, password);
+    let { customer_id, customer_mail } = customer;
+    const token = jwt.sign({ customer_id, customer_mail, type: "customer"  }, process.env.SECRET, {    // Creating json web token
+      expiresIn: 3600
+    });
+    //res.cookie('jwt', token, { httpOnly: true, httpOnly: true, maxAge: 3600000});
+
     res.status(201).json({message: 'Customer created successfully', customer});
   } catch (error) {
-    res.status(400).json({error: 'Failed to create customer'})
+    if (error.name === 'SequelizeUniqueConstraintError') {
+      res.status(409).json({ msg: "Email is already in use" });
+    } else {
+      res.status(500).json({ error: "Failed to register user" });
+    }
   }
 });
 

@@ -9,7 +9,7 @@ var userRouter = require('./routes/user');
 var adminRouter = require('./routes/admin');
 
 var app = express();
-
+app.use(cookieParser());
 app.use('/api/index', indexRouter);
 app.use('/api/user', userRouter);
 app.use('/api/admin', adminRouter);

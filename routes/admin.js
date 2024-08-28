@@ -1,5 +1,7 @@
 var express = require('express');
+require('dotenv').config();
 var router = express.Router();
+const jwt = require('jsonwebtoken');
 router.use(express.json());
 const AdminDAO = require('../service/Admin');
 const CustomerDAO = require('../service/Customer');
@@ -8,11 +10,37 @@ const ItemDAO = require('../service/Item');
 const BookDAO = require('../service/Book');
 
 /**** Administrator operations ****/
+// Sign In
+router.post('/signIn', async (req, res) => {
+    const { mail, password } = req.body;
+    try {
+         let admin = await AdminDAO.getByLogin(mail, password);
+         if (admin.length > 0) { // If mail and password belong to a customer
+             admin = admin[0]; // Get the first admin from the array
+             const { admin_mail, admin_id } = admin;
+             // Generating JSON Web Token
+             const token = jwt.sign({ admin_id, admin_mail, type: "admin" }, process.env.SECRET, {    
+                 expiresIn: 3600
+             });
+             
+             res.cookie('jwt', token, { httpOnly: true, maxAge: 3600000 });
+             res.status(200).json({ message: 'Signed in successfully', admin });
+         } else {
+             res.status(401).json({ msg: "Invalid credentials" });
+         }
+     } catch (error) {
+         res.status(500).json({ error: "Internal Server Error" });
+     }
+ });
+ 
+
+
 // Create Admin Route
 router.post('/newAdmin', async (req, res) => {
     try { 
         let {name, mail, phone, hire_date, password} = req.body;
         const admin = await AdminDAO.insert(name, mail, phone, hire_date, password);
+        
         res.status(201).json({message: 'Administrator created successfully', admin});
     } catch (error) {
         res.status(400).json({error: 'Failed to create administrator'});
