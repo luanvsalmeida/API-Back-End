@@ -63,7 +63,12 @@ const signUp = async (req, res) => {
     }
 };
 
+// Sign Out user (not implemented yet)
+const signOut = (req, res) => {
+}
+
 module.exports = {
     signIn,
-    signUp
+    signUp,
+    signOut
 };

@@ -9,4 +9,7 @@ router.post('/signIn', authController.signIn);
 // Sign Up Customer
 router.post('/signUp', authController.signUp);
 
+// Sign out User (Customer or admin)
+router.post('/signOut', authController.signOut);
+
 module.exports = router;

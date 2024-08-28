@@ -16,22 +16,72 @@ const newAdmin = async (req, res) => {
 
 // Update the logged administrator's data
 const updateAdmin = async (req, res) => {
-
+    let id = req.user.id;
+    let {admin_name, admin_mail, admin_phone, hire_date, admin_password} = req.body;
+    if (req.params.id == id) {
+        try {
+            let rowsUpdated =  await AdminDAO.updateById(id, {
+                admin_name,
+                admin_mail, 
+                admin_phone, 
+                hire_date,
+                admin_password
+            });
+            if (rowsUpdated[0] === 0) {
+                res.status(404).json({msg: "Not Found"});
+            }
+            else {
+                const updatedAdmin = await AdminDAO.getById(id);
+                res.status(200).json({msg: "Administrator updated successfully", updatedAdmin});
+            }
+        } catch (error) {
+            res.status(500).json({error});
+        }
+    }
+    else {
+        res.status(403).json({msg: "Forbidden"});
+    }
 };
 
 // Delete administrator's own data
 const deleteAdmin = async (req, res) => {
-
-};
-
-// Get administrator's own data (unfinished)
-const getAdmin = async (req, res) => {
-    const admin = await AdminDAO.getById(req.params.id);
-    if (!admin) {
-        res.status(404).json({msg: "Administrator not found"});
+    let id = req.user.id;
+    if (req.params.id == id) {
+        try {
+            let rowsDeleted = await AdminDAO.deleteById(id);
+            if (rowsDeleted === 0) {
+                res.status(404).json({msg: "Not Found"});
+            }
+            else {
+                res.status(200).json({msg: "Administrator deleted successfully"});
+            }
+        } catch (error) {
+            res.status(500).json({error});
+        }
     }
     else {
-        res.status(200).json({admin: admin});
+        res.status(403).json({msg: "Forbidden"});
+    }
+};
+
+// Get administrator's own data 
+const getAdmin = async (req, res) => {
+    let id = req.user.id;
+    if (req.params.id == id) {
+        try {
+            const admin = await AdminDAO.getById(req.params.id);
+            if (!admin) {
+                res.status(404).json({msg: "Administrator not found"});
+            }
+            else {
+                res.status(200).json({admin: admin});
+            }
+        } catch (error) {
+            res.status(500).json({error});
+        }
+    }
+    else {
+        res.status(403).json({msg: "Forbidden"});
     }
 };
 
