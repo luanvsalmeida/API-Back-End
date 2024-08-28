@@ -4,15 +4,24 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-var indexRouter = require('./routes/index');
-var userRouter = require('./routes/user');
-var adminRouter = require('./routes/admin');
+const authRoutes = require('./routes/authRoutes');
+const customerRoutes = require('./routes/customerRoutes');
+const adminRoutes = require('./routes/adminRoutes');
+const bookRoutes = require('./routes/bookRoutes');
+const orderRoutes = require('./routes/orderRoutes');
+const itemRoutes = require('./routes/itemRoutes');
+const indexRoutes = require('./routes/index');
 
 var app = express();
 app.use(cookieParser());
-app.use('/api/index', indexRouter);
-app.use('/api/user', userRouter);
-app.use('/api/admin', adminRouter);
+
+app.use('/api/', indexRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/customer', customerRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/api/books', bookRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/items', itemRoutes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
