@@ -6,6 +6,10 @@ require('dotenv').config();
 const customerController = require('../controllers/customerController');
 const Auth = require('../helpers/Auth');
 
+// Middlewares for authentication
+router.use(Auth.validateToken);
+router.use(Auth.authCustomer);
+
 // Lists customer data
 router.get('/customerInfo/:id', customerController.customerInfo);
 

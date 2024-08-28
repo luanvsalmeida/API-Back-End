@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 router.use(express.json());
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
 const authController = require('../controllers/authController');
 
 // Sign Customer or Administrator in

@@ -1,5 +1,6 @@
 const AdminDAO = require('../service/Admin');
 const CustomerDAO = require('../service/Customer');
+const Auth = require('../helpers/Auth');
 
 // Create Admin
 const newAdmin = async (req, res) => {

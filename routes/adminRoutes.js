@@ -4,6 +4,11 @@ router.use(express.json());
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const adminController = require('../controllers/adminController');
+const Auth = require('../helpers/Auth');
+
+// Middlewares for authentication
+router.use(Auth.validateToken);
+router.use(Auth.authAdmin);
 
 // Routes
 // Create Admin

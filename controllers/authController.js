@@ -1,8 +1,44 @@
 const CustomerDAO = require('../service/Customer');
+const AdminDAO = require('../service/Admin');
+const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
 // Sign Customer or Administrator in
 const signIn = async (req, res) => {
-
+    const { user_mail, password } = req.body;
+    let type = '';
+    let id;
+    try {
+        let user = await AdminDAO.getByLogin(user_mail, password);
+        if (user.length > 0 && user[0].admin_mail === user_mail && user[0].admin_password === password) {   // Verify wheter mail and password belongs to a administrator
+            type = 'administrator';     // If mail and password belongs to a admin, set type to administrator
+            id = user[0].admin_id;
+        }
+        else {
+            user = await CustomerDAO.getByLogin(user_mail, password);
+            if (type === '' && user.length > 0 && user[0].customer_mail === user_mail && user[0].customer_password === password) {  // Tests if the mail and password belongs to a customer
+                type = 'customer';
+                id = user[0].customer_id;
+            }
+        }
+        
+        console.log(user);
+        if (type !== '' ) {         // If any the user exists
+            // Generate a token with the user's ID and mail
+            const token = jwt.sign(
+                { id, mail: user_mail, type },
+                process.env.SECRET,
+                { expiresIn: '1h'}
+            );
+            res.status(200).json({ message: 'Signed in successfully', user, token});
+        } 
+        else {
+            res.status(401).json({ error: 'Invalid credentials' });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ error: 'Iternal server error' });
+    }
 };
 
 // Sign Up Customer
@@ -21,6 +57,7 @@ const signUp = async (req, res) => {
         if (error.name === 'SequelizeUniqueConstraintError') {
             res.status(409).json({ msg: "Email is already in use" });
         } else {
+            console.log(error);
             res.status(500).json({ error: "Failed to register user" });
         }
     }

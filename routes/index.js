@@ -37,4 +37,9 @@ router.get('/install', async function(req, res, next) {
   res.json({ mensagem: 'Banco instalado com sucesso' });
 });
 
+// Swagger Documentation
+router.get('/docs', (req, res) => {
+
+}); 
+
 module.exports = router;
