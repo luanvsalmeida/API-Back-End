@@ -127,7 +127,7 @@ Exemplo de JSON para o body:
 #### Método 1 checkout
 Exemplo de conteúdo JSON para o body
 {
-    "customer_id": 0,
+    "customer_id": 2,
     "items": [
         {
             "book_id": 3,
@@ -145,7 +145,13 @@ Exemplo de conteúdo JSON para o body
 Passo 1 ('/customer/newOrder') 
 Não é necessário JSON para o body na rota newOrder:
 
-Passo 2 ('/customer/)
+Passo 2 ('/customer/addToCart)
+{
+  "order_id": 6,
+  "book_id": 2,
+  "quantity": 10
+
+}
  
 
 

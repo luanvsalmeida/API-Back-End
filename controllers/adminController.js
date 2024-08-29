@@ -4,6 +4,7 @@ const Auth = require('../helpers/Auth');
 
 // Create Admin
 const newAdmin = async (req, res) => {
+    // #swagger.summary = 'Cria um novo administrador'
     try { 
         let {name, mail, phone, hire_date, password} = req.body;
         const admin = await AdminDAO.insert(name, mail, phone, hire_date, password);

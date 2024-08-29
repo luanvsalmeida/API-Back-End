@@ -4,6 +4,11 @@ router.use(express.json());
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const itemController = require('../controllers/itemController');
+const Auth = require('../helpers/Auth');
+
+// Middlewares for authentication
+router.use(Auth.validateToken);
+router.use(Auth.authAdmin);
 
 // Create a new item for any user (restricted for administrators)
 router.post('/', itemController.createItem);

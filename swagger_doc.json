@@ -13,6 +13,7 @@
   "paths": {
     "/newAdmin": {
       "post": {
+        "summary": "Cria um novo administrador",
         "description": "",
         "parameters": [
           {
@@ -836,16 +837,6 @@
         "responses": {
           "200": {
             "description": "OK"
-          }
-        }
-      }
-    },
-    "/docs": {
-      "get": {
-        "description": "",
-        "responses": {
-          "default": {
-            "description": ""
           }
         }
       }

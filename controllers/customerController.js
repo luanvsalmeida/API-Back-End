@@ -133,6 +133,7 @@ const getOrder = async (req, res) => {
         const orders = await OrderDAO.getByCustomer(id, page, limit);
         res.status(200).json(orders);
     } catch (error) {
+        console.log(error)
         res.status(500).json(error);
     }
 };
@@ -156,23 +157,28 @@ const deleteOrder = async (req, res) => {
     
 };
 
-// Define a order as closed
+// Define a order as closed 
 const closeOrder = async (req, res) => {
     let order_id = req.params.id;
-    let {id} = req.user;
+    let { id } = req.user;
+
     try {
         let order = await OrderDAO.getById(order_id);       // Get the order
         if (order && id == order.customer_id) {             // Test whether order belongs to customer
             order.is_open = false;                          // Set the order as closed
-            rowsUpdate = OrderDAO.updateById(order, id);    // Update order
-            order = await OrderDAO.getById(order_id);
-            res.status(200).json({msg: "Order closed", order});
+            console.log(order);
+            await order.save();
+
+            order = await OrderDAO.getById(order_id);       
+            res.status(200).json({ msg: "Order closed", order });
+        } else {
+            res.status(404).json({ msg: "Order not found or unauthorized" });
         }
     } catch (error) {
-        res.status(500).json({error});
+        res.status(500).json({ error });
     }
-
 };
+
 
 // Create a item for a specific  order
 const addToCart = async (req, res) => {
@@ -190,25 +196,34 @@ const addToCart = async (req, res) => {
     } catch (error) {
         res.status(500).json(error);
     }
-    
-    
 };
 
-// Delete an item of some open order that the user has created
+// Delete an item of some open order that the user has created 
 const removeFromCart = async (req, res) => {
     let item_id = req.params.id;
     let {id} = req.user;
 
     try {
+        // retrieve the item
         let item = await ItemDAO.getByIdAndCustomer(item_id, id);
-        if (item) {
-            let deletedRows = await ItemDAO.deleteById(item.item_id);
-            if (deletedRows == 0) {
-                res.status(200).json({msg: "Item deleted successfully"});
-            }
+        if (item) {  
+            let order = await OrderDAO.getById(item.order_id);
+            if (order.is_open) {    // Check if its open
+                let deletedRows = await ItemDAO.deleteById(item.item_id);
+                if (deletedRows > 0) {
+                    res.status(200).json({msg: "Item deleted successfully"});
+                }
+                else {
+                    res.status(404).json({msg: "Item not found"});
+                }
+            }   
             else {
-                res.status(404).json({msg: "Item not found"});
+                res.status(400).json({msg: "Order is already finished"});
             }
+            
+        }
+        else {
+            res.status(404).json({msg: "Not Found"});
         }
     } catch (error) {
         res.status(500).json(error);
@@ -217,43 +232,55 @@ const removeFromCart = async (req, res) => {
 
 // Update the item data of an open order that the user has created
 const updateItem = async (req, res) => {
-    let {quantity} = req.body;
+    let { quantity } = req.body;
     let item_id = req.params.id;
-    let {id} = req.user;
+    let { id } = req.user;
     
     try {
         let item = await ItemDAO.getByIdOpenOrder(item_id, id);
-        item.quantity = quantity;
-        let rowsUpdated = await ItemDAO.updateById(id, item);
-        item  = ItemDAO.getById(item.id);
-        if (rowsUpdated[0] == 0) {
-            res.status(200).json({msg: "Item updated successfully", item});
-        }
-        else {
-            res.status(404).json({msg: "Not found"});
+        
+        if (item && item.quantity !== undefined) {  // Check if item exists
+            item.quantity = quantity;
+            let rowsUpdated = await ItemDAO.updateById(item_id, { quantity: item.quantity });
+            
+            if (rowsUpdated[0] > 0) {  // Check if rows were updated
+                item = await ItemDAO.getById(item_id);  // Retrieve updated item
+                res.status(200).json({ msg: "Item updated successfully", item });
+            } else {
+                res.status(404).json({ msg: "Item not found or update failed" });
+            }
+        } else {
+            res.status(404).json({ msg: "Item not found or unauthorized" });
         }
     } catch (error) {
         res.status(500).json(error);
     }
 };
 
-// Return the items of some close order and the total
+// Return the items of some close order and the total 
 const getReciept = async (req, res) => {
-    let { order_id } = req.body;
+    let order_id = req.params.id;
 
     try {
-        let items = await ItemDAO.getByOrderId(order_id);
-        let total = 0.0;                // Price of the order
-        
-        if (items.length > 0) {
-            for (const item of items) {
-                let book = await BookDAO.getById(item.book_id);
-                total += (book.price * item.quantity);          // Sum the price of the item 
+        let order = await OrderDAO.getById(order_id);
+        if (order.customer_id == req.user.id) {     // Order belongs to logged customer
+            let items = await ItemDAO.getByOrderId(order_id);
+            let total = 0.0;                // Price of the order
+            
+            if (items.length > 0) {
+                for (const item of items) {
+                    let book = await BookDAO.getById(item.book_id);
+                    total += (book.price * item.quantity);          // Sum the price of the item 
+                }
+                res.status(200).json({ msg: "Receipt: ", items, total });
+            } else {
+                res.status(404).json({ msg: "No items found for this order" });
             }
-            res.status(200).json({ msg: "Receipt: ", items, total });
-        } else {
-            res.status(404).json({ msg: "No items found for this order" });
         }
+        else {
+            res.status(403).json({msg: "Forbidden"})
+        }
+        
     } catch (error) {
         res.status(500).json(error);
     }

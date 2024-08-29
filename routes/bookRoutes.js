@@ -13,9 +13,9 @@ router.post('/', Auth.validateToken, Auth.authAdmin, bookController.createBook);
 router.get('/',  bookController.getBooks);
 
 // Update book by it's id
-router.post('/:id', bookController.updateBook);
+router.post('/:id', Auth.validateToken, Auth.authAdmin, bookController.updateBook);
 
 // Delete book by it's id
-router.delete('/:id', bookController.deleteBook);
+router.delete('/:id', Auth.validateToken, Auth.authAdmin, bookController.deleteBook);
 
 module.exports = router;

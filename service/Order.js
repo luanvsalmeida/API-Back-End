@@ -29,8 +29,8 @@ module.exports = {
         });
     },
     // Update method
-    updateById: async (order, id) => {
-        return await OrderModel.update(order, { where: { order_id: id } });
+    updateById: async (item_id, updatedItem) => {
+        return await ItemModel.update(updatedItem, { where: { item_id } });
     },
 
     // Delete method

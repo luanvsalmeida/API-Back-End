@@ -4,6 +4,11 @@ router.use(express.json());
 const jwt = require('jsonwebtoken');
 require('dotenv').config();
 const orderController = require('../controllers/orderController');
+const Auth = require('../helpers/Auth');
+
+// Middlewares for authentication
+router.use(Auth.validateToken);
+router.use(Auth.authAdmin);
 
 // Create a new order for any user (restricted for administrators)
 router.post('/', orderController.createOrder);

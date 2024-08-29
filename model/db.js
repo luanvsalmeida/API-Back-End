@@ -125,7 +125,7 @@ const OrderModel = sequelize.define('Order', {
     is_open: {                  
         type: DataTypes.BOOLEAN,
         allowNull: false,
-        defaultValue: true
+        defaultValue: false
     }
 });
 
