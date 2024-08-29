@@ -5,18 +5,18 @@ require('dotenv').config();
 
 // Sign Customer or Administrator in
 const signIn = async (req, res) => {
-    const { user_mail, password } = req.body;
+    const { mail, password } = req.body;
     let type = '';
     let id;
     try {
-        let user = await AdminDAO.getByLogin(user_mail, password);
-        if (user.length > 0 && user[0].admin_mail === user_mail && user[0].admin_password === password) {   // Verify wheter mail and password belongs to a administrator
+        let user = await AdminDAO.getByLogin(mail, password);
+        if (user.length > 0 && user[0].admin_mail === mail && user[0].admin_password === password) {   // Verify whether mail and password belongs to a administrator
             type = 'administrator';     // If mail and password belongs to a admin, set type to administrator
             id = user[0].admin_id;
         }
         else {
-            user = await CustomerDAO.getByLogin(user_mail, password);
-            if (type === '' && user.length > 0 && user[0].customer_mail === user_mail && user[0].customer_password === password) {  // Tests if the mail and password belongs to a customer
+            user = await CustomerDAO.getByLogin(mail, password);
+            if (type === '' && user.length > 0 && user[0].customer_mail === mail && user[0].customer_password === password) {  // Tests if the mail and password belongs to a customer
                 type = 'customer';
                 id = user[0].customer_id;
             }
@@ -26,7 +26,7 @@ const signIn = async (req, res) => {
         if (type !== '' ) {         // If any the user exists
             // Generate a token with the user's ID and mail
             const token = jwt.sign(
-                { id, mail: user_mail, type },
+                { id, mail: mail, type },
                 process.env.SECRET,
                 { expiresIn: '1h'}
             );
@@ -63,12 +63,8 @@ const signUp = async (req, res) => {
     }
 };
 
-// Sign Out user (not implemented yet)
-const signOut = (req, res) => {
-}
 
 module.exports = {
     signIn,
     signUp,
-    signOut
 };

@@ -1,15 +1,13 @@
-require('dotenv').config();
 var express = require('express');
 var router = express.Router();
 router.use(express.json());
-var jwt = require('jsonwebtoken');
 const { sequelize } = require('../model/db');
 const Admin = require('../service/Admin');
 const Customer = require('../service/Customer');
 const Book = require('../service/Book');
 const Item = require('../service/Item');
 const Order = require('../service/Order');
-const { BooksData, CustomersData, ItemsData } = require('../helpers/installData');
+const { BooksData, CustomersData, ItemsData } = require('../helpers/installData');    // Data for the install route
 
 
 // Database installation and first insertion
@@ -36,10 +34,5 @@ router.get('/install', async function(req, res, next) {
 
   res.json({ mensagem: 'Banco instalado com sucesso' });
 });
-
-// Swagger Documentation
-router.get('/docs', (req, res) => {
-
-}); 
 
 module.exports = router;

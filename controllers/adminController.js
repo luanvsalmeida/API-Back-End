@@ -16,21 +16,21 @@ const newAdmin = async (req, res) => {
 
 // Update the logged administrator's data
 const updateAdmin = async (req, res) => {
-    let id = req.user.id;
-    let {admin_name, admin_mail, admin_phone, hire_date, admin_password} = req.body;
-    if (req.params.id == id) {
+    let id = req.user.id;   // get token id
+    let {admin_name, admin_mail, admin_phone, hire_date, admin_password} = req.body;    // Admin data
+    if (req.params.id == id) {      // If the Id belongs to the admin logged
         try {
-            let rowsUpdated =  await AdminDAO.updateById(id, {
+            let rowsUpdated =  await AdminDAO.updateById(id, {  // Update Data
                 admin_name,
                 admin_mail, 
                 admin_phone, 
                 hire_date,
                 admin_password
             });
-            if (rowsUpdated[0] === 0) {
+            if (rowsUpdated[0] === 0) {                 // No rows changed
                 res.status(404).json({msg: "Not Found"});
             }
-            else {
+            else {          
                 const updatedAdmin = await AdminDAO.getById(id);
                 res.status(200).json({msg: "Administrator updated successfully", updatedAdmin});
             }
@@ -38,14 +38,14 @@ const updateAdmin = async (req, res) => {
             res.status(500).json({error});
         }
     }
-    else {
+    else {                    
         res.status(403).json({msg: "Forbidden"});
     }
 };
 
 // Delete administrator's own data
 const deleteAdmin = async (req, res) => {
-    let id = req.user.id;
+    let id = req.user.id;   // get token id
     if (req.params.id == id) {
         try {
             let rowsDeleted = await AdminDAO.deleteById(id);
@@ -66,7 +66,7 @@ const deleteAdmin = async (req, res) => {
 
 // Get administrator's own data 
 const getAdmin = async (req, res) => {
-    let id = req.user.id;
+    let id = req.user.id;   // get token id
     if (req.params.id == id) {
         try {
             const admin = await AdminDAO.getById(req.params.id);
@@ -101,7 +101,7 @@ const deleteCustomer = async (req, res) => {
     let {id} = req.params;
     try {
         const rowsDeleted = await CustomerDAO.deleteById(id);
-        if (rowsDeleted === 0) {     // Checks if any row was deleted
+        if (rowsDeleted === 0) {     // Check if any row was deleted
             res.status(404).json({msg: "Customer not found"});
         }
         res.status(200).json({msg: "Customer deleted with success"});

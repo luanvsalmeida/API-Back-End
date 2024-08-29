@@ -29,7 +29,7 @@ router.post('/newOrder', customerController.newOrder);
 router.get('/getOrder', customerController.getOrder);
 
 // Delete some order that the user has created, only if it is open
-router.delete('/deleteOrders', customerController.deleteOrders);
+router.delete('/deleteOrder/:id', customerController.deleteOrder);
 
 // Define a order as closed
 router.put('/closeOrder/:id', customerController.closeOrder);
@@ -43,7 +43,7 @@ router.delete('/removeFromCart/:id', customerController.removeFromCart);
 // Update the item data of an open order that the user has created
 router.put('/updateItem/:id', customerController.updateItem);
 
-// Retur the items of some close order and the total
+// Return the items of some close order and the total
 router.get('/getReciept/:id', customerController.getReciept);
 
 module.exports = router;

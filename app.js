@@ -11,6 +11,8 @@ const bookRoutes = require('./routes/bookRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const itemRoutes = require('./routes/itemRoutes');
 const indexRoutes = require('./routes/index');
+const swaggerUI = require('swagger-ui-express');
+const swaggerFile = require('./swagger_doc.json');
 
 var app = express();
 app.use(cookieParser());
@@ -22,6 +24,11 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/books', bookRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/items', itemRoutes);
+
+
+// Swagger Documentation
+app.use('/docs', swaggerUI.serve, swaggerUI.setup(swaggerFile));
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
