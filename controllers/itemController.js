@@ -2,6 +2,7 @@ const ItemDAO = require('../service/Item');
 
 // Create a new item for any order (restricted for administrators)
 const createItem = async (req, res) => {
+    // #swagger.summary = 'Cria um novo item para qualquer pedido (apenas para adminstradores).'
     let {quantity, order_id, book_id} = req.body;
     try {
         const item = await ItemDAO.insert(quantity, order_id, book_id);
@@ -13,6 +14,7 @@ const createItem = async (req, res) => {
 
 // List all items (restricted for administrators)
 const getItems = async (req, res) => {
+    // #swagger.summary = ' Lista todos os items registrados (apenas para adminstradores).'
     let {page, limit} = req.query;
 
     page = parseInt(page);
@@ -37,6 +39,7 @@ const getItems = async (req, res) => {
 
 // Update the item from any order, open or closed (restricted for administrators)
 const updateItem = async (req, res) => {
+    // #swagger.summary = 'Atualiza qualquer item registrado (apenas para adminstradores).'
     let { id } = req.params;
     let { quantity, order_id, book_id } = req.body;
     let updatedItem = {
@@ -59,6 +62,7 @@ const updateItem = async (req, res) => {
 
 // Delete any item from any, open or closed (restricted for administrators)
 const deleteItem = async (req, res) => {
+    // #swagger.summary = 'Deleta qualquer item registrado (apenas para adminstradores).'
     let {id} = req.params;
     try{ 
         const rowsDeleted = await ItemDAO.deleteById(id);

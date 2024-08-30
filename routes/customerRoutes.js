@@ -46,4 +46,7 @@ router.put('/updateItem/:id', customerController.updateItem);
 // Return the items of some close order and the total
 router.get('/getReciept/:id', customerController.getReciept);
 
+// Lista o total de compras que o cliente fez
+router.get('/getAmountOfOrders/:id', customerController.getAmountOfOrders);
+
 module.exports = router;

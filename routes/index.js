@@ -12,6 +12,7 @@ const { BooksData, CustomersData, ItemsData } = require('../helpers/installData'
 
 // Database installation and first insertion
 router.get('/install', async function(req, res, next) {
+  // #swagger.summary = 'Rota para instalação da API com os dados iniciais.'
   // Create database
   await sequelize.sync({ force: true });
 

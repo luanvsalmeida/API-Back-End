@@ -4,7 +4,7 @@ const Auth = require('../helpers/Auth');
 
 // Create Admin
 const newAdmin = async (req, res) => {
-    // #swagger.summary = 'Cria um novo administrador'
+    // #swagger.summary = 'Cria um novo administrador (apenas para administradores).'
     try { 
         let {name, mail, phone, hire_date, password} = req.body;
         const admin = await AdminDAO.insert(name, mail, phone, hire_date, password);
@@ -17,6 +17,7 @@ const newAdmin = async (req, res) => {
 
 // Update the logged administrator's data
 const updateAdmin = async (req, res) => {
+    // #swagger.summary = 'Atualiza as informações do administrador que está logado (apenas para administradores).'
     let id = req.user.id;   // get token id
     let {admin_name, admin_mail, admin_phone, hire_date, admin_password} = req.body;    // Admin data
     if (req.params.id == id) {      // If the Id belongs to the admin logged
@@ -46,6 +47,7 @@ const updateAdmin = async (req, res) => {
 
 // Delete administrator's own data
 const deleteAdmin = async (req, res) => {
+    // #swagger.summary = 'Deleta os dados do adminsitrador logado'
     let id = req.user.id;   // get token id
     if (req.params.id == id) {
         try {
@@ -67,6 +69,7 @@ const deleteAdmin = async (req, res) => {
 
 // Get administrator's own data 
 const getAdmin = async (req, res) => {
+    // #swagger.summary = 'Recupera as informações do adminstrador logado'
     let id = req.user.id;   // get token id
     if (req.params.id == id) {
         try {
@@ -88,6 +91,7 @@ const getAdmin = async (req, res) => {
 
 // Create a customer without sign in
 const createCustomer = async (req, res) => {
+    // #swagger.summary = 'Cria um usuário sem retornar o token de acesso'
     try {
         let {name, mail, password, phone, address} = req.body;
         const customer = await CustomerDAO.insert(name, mail, password, phone, address);
@@ -99,6 +103,7 @@ const createCustomer = async (req, res) => {
 
 // Delete any customer by id
 const deleteCustomer = async (req, res) => {
+    // #swagger.summary = 'Exclui qualquer usuário (apenas administradores tem acesso a esta rota).'
     let {id} = req.params;
     try {
         const rowsDeleted = await CustomerDAO.deleteById(id);
@@ -113,6 +118,7 @@ const deleteCustomer = async (req, res) => {
 
 // Update any customer by id
 const updateCustomer = async (req, res) => {
+    // #swagger.summary = 'Atualiza os dados de qualquer usuário (apenas adminsitradores tem acesso a esta rota).'
     let {id} = req.params;
     let {name, mail, phone, address, password} = req.body;
     let updatedCustomer = {
@@ -136,6 +142,7 @@ const updateCustomer = async (req, res) => {
 
 // Get customers with pagination
 const getCustomers = async (req, res) => {
+    // #swagger.summary = 'Retorna os dados de todos os usuários (apenas para administradores).'
     let {page, limit} = req.query;
 
     page = parseInt(page);

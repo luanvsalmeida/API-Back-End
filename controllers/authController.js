@@ -5,8 +5,9 @@ require('dotenv').config();
 
 // Sign Customer or Administrator in
 const signIn = async (req, res) => {
+    // #swagger.summary = 'Rota de login para cliente ou administrador'
     const { mail, password } = req.body;
-    let type = '';
+    let type = '';          // Customer or admin
     let id;
     try {
         let user = await AdminDAO.getByLogin(mail, password);
@@ -43,6 +44,7 @@ const signIn = async (req, res) => {
 
 // Sign Up Customer
 const signUp = async (req, res) => {
+    // #swagger.summary = 'Cria um novo cliente e retorna o token para acesso a rotas autenticadas'
     try {
         let {name, mail, password, phone, address} = req.body;
         const customer = await CustomerDAO.insert(name, mail, phone, address, password);
@@ -50,7 +52,6 @@ const signUp = async (req, res) => {
         const token = jwt.sign({ customer_id, customer_mail, type: "customer"  }, process.env.SECRET, {    // Creating json web token
             expiresIn: 3600
         });
-        //res.cookie('jwt', token, { httpOnly: true, maxAge: 3600000});
     
         res.status(201).json({message: 'Customer created successfully', customer, token: token});
     } catch (error) {

@@ -2,6 +2,7 @@ const OrderDAO =  require('../service/Order');
 
 // Create a new order for any user (restricted for administrators)
 const createOrder = async (req, res) => {
+    // #swagger.summary = 'Cria um novo pedido para qualquer cliente registraod (apenas para adminstradores).'
     let {customer_id} = req.body;
     try {
         const order = await OrderDAO.insert(customer_id);
@@ -13,6 +14,7 @@ const createOrder = async (req, res) => {
 
 // List all orders (restricted for administrators)
 const getOrders = async (req, res) => {
+    // #swagger.summary = 'Lista todas os pedidos registrados (apenas para adminstradores).'
     let {page, limit} = req.query;
 
     page = parseInt(page);
@@ -37,6 +39,7 @@ const getOrders = async (req, res) => {
 
 // Update the order from any user, open or closed (restricted for administrators)
 const updateOrder = async (req, res) => {
+    // #swagger.summary = 'Atualiza qualquer pedido registrado (apenas para adminstradores).'
     let {id} = req.params;
     let {customer_id, date} = req.body;
     let updatedOrder = {
@@ -58,6 +61,7 @@ const updateOrder = async (req, res) => {
 
 // Delete any order, open or closed (restricted for administrators)
 const deleteOrder = async (req, res) => {
+    // #swagger.summary = 'Deleta qualquer pedido (apenas para adminstradores).'
     let {id} = req.params;
     try{ 
         const rowsDeleted = await OrderDAO.deleteById(id);

@@ -1,157 +1,62 @@
-# API-Back-End
- Projeto 2 da disciplina de Programação Web Back-end (2024-01)
+# Projeto BackEnd (2024-1): API de Livraria 
 
+Este projeto consiste no desenvolvimento de uma API RESTful para gerenciar uma livraria, permitindo a administração de clientes, livros, pedidos e itens relacionados aos pedidos. A API é construída utilizando Node.js com o framework Express, Sequelize como ORM, e o banco de dados SQLite.
 
-## Regras de negócios API livraria
+## Funcionalidades Principais
 
-### Banco de Dados
+- **Clientes**: Cadastro, consulta, atualização e exclusão de clientes.
+- **Livros**: Gerenciamento de livros, incluindo cadastro, consulta, atualização e exclusão.
+- **Pedidos**: Criação, consulta, atualização (fechamento) e exclusão de pedidos feitos pelos clientes.
+- **Itens**: Adição, consulta, atualização e remoção de itens em um pedido aberto.
 
-O sistema irá registrar as informações a respeito dos clientes, administradores, livros, pedidos e itens dos pedidos.
+## Tecnologias Utilizadas
 
-O objeto livro terá as seguintes informações: id do livro, título, autor, preço, estoque, data de publicação e categoria.
+- **Node.js**: Ambiente de execução JavaScript.
+- **Express**: Framework para construção de APIs em Node.js.
+- **Sequelize**: ORM para manipulação do banco de dados relacional SQLite.
+- **SQLite**: Banco de dados utilizado para armazenar as informações da API.
+- **JSON Web Token (JWT)**: Utilizado para autenticação e autorização dos usuários.
+- **Swagger**: Ferramenta utilizada para a documentação da API.
 
-O objeto cliente terá as seguintes informações: id do cliente, nome, e-mail, senha, telefone e endereço.
+## Estrutura do Banco de Dados
 
-O objeto administrador terá as seguintes informações: id do administrador, nome, e-mail, senha, telefone e data de submissão.
+### Tabelas
 
-O objeto pedido terá as seguintes informações: id do pedido, id do cliente (chave estrangeira) e data do pedido.
+- **Admin**: Contém informações dos administradores do sistema.
+- **Customer**: Tabela de clientes, armazenando informações básicas como nome, e-mail, senha, telefone e endereço.
+- **Book**: Tabela de livros, contendo título, autor, preço, estoque, data de publicação e gênero.
+- **Order**: Tabela de pedidos, relacionando clientes com os itens pedidos e armazenando o estado (aberto ou fechado) do pedido.
+- **Item**: Tabela intermediária entre livros e pedidos, contendo a quantidade de um livro específico em um pedido.
 
+### Relacionamentos
 
-O objeto item do pedido terá as seguintes informações: id do item, id do pedido, id do livro, quantidade.
+- Um cliente pode ter vários pedidos.
+- Um pedido pertence a um cliente.
+- Um pedido pode ter vários itens.
+- Um item pertence a um pedido.
+- Um livro pode estar relacionado a vários pedidos através da tabela de itens.
+- Um pedido pode ter vários livros através da tabela de itens.
 
-Um cliente pode realizar muitos pedidos, mas um pedido pertencerá a apenas um cliente (1 cliente para muitos pedidos).
+## Como Executar o Projeto
 
-Um pedido pode conter muitos livros e um livro pode aparecer em muitos pedidos (muitos para muitos).
+1. **Clone o repositório**:
+   ```bash
+   git clone <URL_DO_REPOSITORIO>
+   ```
 
-Caso os itens data do pedido (pedido) ou data de submissão (administrador) não esteja especificada o valor padrão será a data atual.
+2. **Instale as dependências**:
+   ```bash
+   npm install
+   ```
 
-### Operações CRUD
+3. **Inicie o servidor**:
+   ```bash
+   npm start
+   ```
 
+4. **Acesse a API**:
+   A API estará disponível em `http://localhost:3000`.
 
-### Autenticação
+## Autenticação
 
-As rotas para criação de usuário não será autenticada (pois qualquer um pode criar um usuário). 
-
-As rotas para ler, alterar e deletar usuários só poderão ser acessadas por administradores.
-
-As rotas para ler, criar, alterar e deletar administradores só poderão ser acessadas por administradores.
-
-As rotas para pesquisar livros será disponível somente para usuários.
-
-As rotas para criar, editar e deletar livros só poderão ser acessadas por adminsitradores.
-
-Compras só poderão ser feitas por usuários e administradores.
-
-As operações para ler, alterar ou deletar compras só poderão ser feitas pelos administradores.
-
-As operações para criar items para compra só poderão ser feitas por usuários e administradores.
-
-As operações restantes relacionas aos itens (pesquisar, alterar e deletar) só poderão ser feitas por administradores.
-
-As senhas deverão ter no mínimo 8 caracteres e pelo menos um número.
-
-Os nomes identificadores para login serão e-mail (usuário) e senha.
-
-
-## Instruções para teste
-
-
-### Login
-rota: /api/user/signIn
-
-Exemplo de conteúdo JSON para o body:
-{
-    "mail": "al.capone@mail.com"
-    "password": "capone123"
-}
-
-### Atualizar Usuário pelo administrador ('api/admin/updateCustomer/:id')
-Exemplo de conteúdo JSON para o body
-{
-    "name": "Thorin Oakenshield",
-    "mail": "oakenshield@mail.com",
-    "phone": "+55 41 99432-1762",
-    "address": "1234 Elm Street, Dublin, D01 XY23, Ireland",
-    "password": "thorin123"
-}
-
-### Criar Admininstrador ('/api/admin/newAdmin')
-Exemplo de conteúdo JSON para o body
-{
-    "name": "Gollum",
-    "mail": "precious@mail.com",
-    "phone": "+55 21 98812-1232",
-    "hire-date": "2024-08-22T12:34:56Z",
-    "password": "gollum123"
-}
-
-
-### Atualizar Administrador ('/api/admin/updateAdmin')
-Exemplo de conteúdo JSON para o body
-{
-    "id": 2,
-    "name": "Zlatan Ibrahimovic",
-    "mail": "zlatan@mail.com",
-    "phone": "+55 11 99821-2133",
-    "hireDate": "2024-02-21T12:34:56Z",
-    "password": "zlatan123"
-}
-
-### Criar Livro
-Exemplo de JSON para o body: 
-{
-    "book_title": "The Lion, the Witch and the Wardrobe",
-    "author": "C.S. Lewis",
-    "price": 12.99,
-    "stock": 25,
-    "publication_date": "1950-10-16",
-    "genre": "Fantasy"
-}
-
-### Criar Pedido (Administrador)
-Exemplo de JSON para o body: 
-{
-    "customer_id": 2
-}
-
-### Criar Item do pedido (Administrador)
-Exemplo de JSON para o body:
-{
-    "quantity": 1,
-    "book_id": 3,
-    "order_id": 1
-}
-
-
-### Gerar Compra 
-#### Método 1 checkout
-Exemplo de conteúdo JSON para o body
-{
-    "customer_id": 2,
-    "items": [
-        {
-            "book_id": 3,
-            "quantity": 1
-        },
-        {
-            "book_id": 2,
-            "quantity": 1
-        }
-    ]
-}
-
-
-### Método 2 newOrder, addToCart e closeOrder
-Passo 1 ('/customer/newOrder') 
-Não é necessário JSON para o body na rota newOrder:
-
-Passo 2 ('/customer/addToCart)
-{
-  "order_id": 6,
-  "book_id": 2,
-  "quantity": 10
-
-}
- 
-
-
+A autenticação é realizada utilizando JWT. Após o login, o token gerado deve ser incluído no cabeçalho das requisições seguintes para garantir o acesso autorizado.

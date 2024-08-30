@@ -2,6 +2,7 @@ const BookDAO = require('../service/Book');
 
 // Create a new book
 const createBook = async (req, res) => {
+    // #swagger.summary = 'Cria um novo livro (apenas para adminsitradores)'
     let {title, author, price, stock, publication_date, genre} = req.body;
     try {
         const book = await BookDAO.insert(title, author, price, stock, publication_date, genre);
@@ -13,6 +14,7 @@ const createBook = async (req, res) => {
 
 // List books with pagination
 const getBooks = async (req, res) => {
+    // #swagger.summary = 'Retorna os dados de todos os livros'
     let {page,limit} = req.query;
 
     page = parseInt(page);
@@ -36,6 +38,7 @@ const getBooks = async (req, res) => {
 
 // Update book by it's id
 const updateBook = async (req, res) => {
+    // #swagger.summary = 'Atualiza os dados de um livro (apenas para adminstradores)'
     let {id} = req.params;
     let {title, author, price, stock, publication_date, genre} = req.body;
     let updatedBook = {
@@ -60,6 +63,7 @@ const updateBook = async (req, res) => {
 
 // Delete book by it's id
 const deleteBook = async (req, res) => {
+    // #swagger.summary = 'Deleta os dados de um livro pelo seu id (apenas para adminstradores)'
     let {id} = req.params;
     try{ 
         const rowsDeleted = await BookDAO.deleteById(id);

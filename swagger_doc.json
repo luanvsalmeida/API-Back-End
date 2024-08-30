@@ -13,7 +13,7 @@
   "paths": {
     "/newAdmin": {
       "post": {
-        "summary": "Cria um novo administrador",
+        "summary": "Cria um novo administrador (apenas para administradores).",
         "description": "",
         "parameters": [
           {
@@ -56,6 +56,7 @@
     },
     "/updateAdmin/{id}": {
       "put": {
+        "summary": "Atualiza as informações do administrador que está logado (apenas para administradores).",
         "description": "",
         "parameters": [
           {
@@ -107,6 +108,7 @@
     },
     "/deleteAdmin/{id}": {
       "delete": {
+        "summary": "Deleta os dados do adminsitrador logado",
         "description": "",
         "parameters": [
           {
@@ -134,6 +136,7 @@
     },
     "/getAdmin/{id}": {
       "get": {
+        "summary": "Recupera as informações do adminstrador logado",
         "description": "",
         "parameters": [
           {
@@ -161,6 +164,7 @@
     },
     "/createCustomer": {
       "post": {
+        "summary": "Cria um usuário sem retornar o token de acesso",
         "description": "",
         "parameters": [
           {
@@ -203,6 +207,7 @@
     },
     "/deleteCustomer/{id}": {
       "delete": {
+        "summary": "Deleta os dados do cliente logado (apenas para clientes).",
         "description": "",
         "parameters": [
           {
@@ -230,6 +235,7 @@
     },
     "/updateCustomer/{id}": {
       "put": {
+        "summary": "Atualiza os dados de qualquer usuário (apenas adminsitradores tem acesso a esta rota).",
         "description": "",
         "parameters": [
           {
@@ -281,6 +287,7 @@
     },
     "/getCustomers": {
       "get": {
+        "summary": "Retorna os dados de todos os usuários (apenas para administradores).",
         "description": "",
         "parameters": [
           {
@@ -309,6 +316,7 @@
     },
     "/signIn": {
       "post": {
+        "summary": "Rota de login para cliente ou administrador",
         "description": "",
         "parameters": [
           {
@@ -342,6 +350,7 @@
     },
     "/signUp": {
       "post": {
+        "summary": "Cria um novo cliente e retorna o token para acesso a rotas autenticadas",
         "description": "",
         "parameters": [
           {
@@ -384,6 +393,7 @@
     },
     "/": {
       "post": {
+        "summary": "Cria um novo pedido para qualquer cliente registraod (apenas para adminstradores).",
         "description": "",
         "parameters": [
           {
@@ -412,6 +422,7 @@
         }
       },
       "get": {
+        "summary": "Lista todas os pedidos registrados (apenas para adminstradores).",
         "description": "",
         "parameters": [
           {
@@ -431,12 +442,16 @@
           },
           "400": {
             "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
           }
         }
       }
     },
     "/{id}": {
       "post": {
+        "summary": "Atualiza qualquer pedido registrado (apenas para adminstradores).",
         "description": "",
         "parameters": [
           {
@@ -465,6 +480,9 @@
           "200": {
             "description": "OK"
           },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found"
           },
@@ -474,6 +492,7 @@
         }
       },
       "delete": {
+        "summary": "Deleta qualquer pedido (apenas para adminstradores).",
         "description": "",
         "parameters": [
           {
@@ -487,6 +506,9 @@
           "200": {
             "description": "OK"
           },
+          "403": {
+            "description": "Forbidden"
+          },
           "404": {
             "description": "Not Found"
           },
@@ -498,6 +520,7 @@
     },
     "/customerInfo/{id}": {
       "get": {
+        "summary": "Lista as informações do cliente logado (apenas para clientes).",
         "description": "",
         "parameters": [
           {
@@ -525,6 +548,7 @@
     },
     "/update/{id}": {
       "put": {
+        "summary": "Atualiza as informações do cliente logado (apenas para clientes).",
         "description": "",
         "parameters": [
           {
@@ -576,6 +600,7 @@
     },
     "/checkout": {
       "post": {
+        "summary": "Cria o pedido e os itens passados pelo body, associando os itens ao pedido (apenas para clientes).",
         "description": "",
         "parameters": [
           {
@@ -609,6 +634,7 @@
     },
     "/newOrder": {
       "post": {
+        "summary": "Cria um pedido vazio (sem itens) (apenas para clientes).",
         "description": "",
         "responses": {
           "201": {
@@ -625,6 +651,7 @@
     },
     "/getOrder": {
       "get": {
+        "summary": "Lista os pedidos do cliente logado (apenas para clientes).",
         "description": "",
         "parameters": [
           {
@@ -656,6 +683,7 @@
     },
     "/deleteOrder/{id}": {
       "delete": {
+        "summary": "Deleta um pedido do usuário logado com o id do pedido passado como parametro (apenas para clientes).",
         "description": "",
         "parameters": [
           {
@@ -680,6 +708,7 @@
     },
     "/closeOrder/{id}": {
       "put": {
+        "summary": "Define o pedido feito pelo usuário logado como concluído (apenas para clientes).",
         "description": "",
         "parameters": [
           {
@@ -696,6 +725,9 @@
           "403": {
             "description": "Forbidden"
           },
+          "404": {
+            "description": "Not Found"
+          },
           "500": {
             "description": "Internal Server Error"
           }
@@ -704,6 +736,7 @@
     },
     "/addToCart": {
       "post": {
+        "summary": "Cria um item para um pedido do cliente logado (apenas para clientes).",
         "description": "",
         "parameters": [
           {
@@ -740,6 +773,7 @@
     },
     "/removeFromCart/{id}": {
       "delete": {
+        "summary": "deleta um item de um pedido que está aberto (apenas para clientes).",
         "description": "",
         "parameters": [
           {
@@ -752,6 +786,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "403": {
             "description": "Forbidden"
@@ -767,6 +804,7 @@
     },
     "/updateItem/{id}": {
       "put": {
+        "summary": "Atualiza o item de um pedido pelo id ainda não concluído (apenas para clientes).",
         "description": "",
         "parameters": [
           {
@@ -806,6 +844,7 @@
     },
     "/getReciept/{id}": {
       "get": {
+        "summary": "Retorna os items de um pedido e o valor total da compra (apenas para clientes).",
         "description": "",
         "parameters": [
           {
@@ -831,8 +870,44 @@
         }
       }
     },
+    "/getAmountOfOrders/{id}": {
+      "get": {
+        "summary": "Retorna os pedidos e o total de pedidos que o cliente já realizou (apenas para clientes).",
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
     "/install": {
       "get": {
+        "summary": "Rota para instalação da API com os dados iniciais.",
         "description": "",
         "responses": {
           "200": {

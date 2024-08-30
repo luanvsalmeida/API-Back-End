@@ -6,6 +6,7 @@ const Order = require('../service/Order');
 
 // Lists customer data
 const customerInfo = async (req, res) => {
+    // #swagger.summary = 'Lista as informações do cliente logado (apenas para clientes).'
     let id = req.user.id    // get token id
     if (req.params.id == id) {      // Test whether params belongs to the user logged or not
         try {
@@ -27,6 +28,7 @@ const customerInfo = async (req, res) => {
 
 // Update customer data
 const update = async (req, res) => {
+    // #swagger.summary = 'Atualiza as informações do cliente logado (apenas para clientes).'
     let id = req.user.id    // get token id
     let {customer_name, customer_mail, customer_phone, customer_password, customer_address} = req.body;     // Customer updated data
     if (req.params.id == id) {      // Test whether params belongs to the user logged or not
@@ -56,6 +58,7 @@ const update = async (req, res) => {
 
 // Delete customer own data
 const deleteCustomer = async (req, res) => {
+    // #swagger.summary = 'Deleta os dados do cliente logado (apenas para clientes).'
     let id = req.user.id;   // get token id
     if (req.params.id == id) {
         try {
@@ -77,6 +80,7 @@ const deleteCustomer = async (req, res) => {
 
 // Create the order and item for the user that requested it
 const checkout = async (req, res) => {
+    // #swagger.summary = 'Cria o pedido e os itens passados pelo body, associando os itens ao pedido (apenas para clientes).'
     const { customer_id, items } = req.body;
     // Tests wheter customer is shopping for his own id
     if (req.user.id != customer_id) {
@@ -104,6 +108,7 @@ const checkout = async (req, res) => {
 
 // Create a order without any item
 const newOrder = async (req, res) => {
+    // #swagger.summary = 'Cria um pedido vazio (sem itens) (apenas para clientes).'
     let id = req.user.id;
 
     try {
@@ -116,6 +121,7 @@ const newOrder = async (req, res) => {
 
 // Get all orders that the user has done
 const getOrder = async (req, res) => {
+    // #swagger.summary = 'Lista os pedidos do cliente logado (apenas para clientes).'
     let id = req.user.id;
     let { page, limit } = req.query;
     page = parseInt(page);
@@ -140,6 +146,7 @@ const getOrder = async (req, res) => {
 
 // Delete some order that the user has created, only if it is open
 const deleteOrder = async (req, res) => {
+    // #swagger.summary = 'Deleta um pedido do usuário logado com o id do pedido passado como parametro (apenas para clientes).'
     let order_id = req.params.id;
     let {id} = req.user;
     try {
@@ -159,6 +166,7 @@ const deleteOrder = async (req, res) => {
 
 // Define a order as closed 
 const closeOrder = async (req, res) => {
+    // #swagger.summary = 'Define o pedido feito pelo usuário logado como concluído (apenas para clientes).'
     let order_id = req.params.id;
     let { id } = req.user;
 
@@ -182,6 +190,7 @@ const closeOrder = async (req, res) => {
 
 // Create a item for a specific  order
 const addToCart = async (req, res) => {
+    // #swagger.summary = 'Cria um item para um pedido do cliente logado (apenas para clientes).'
     let {order_id, book_id, quantity} = req.body;
     let {id} = req.user;
     try {
@@ -200,6 +209,7 @@ const addToCart = async (req, res) => {
 
 // Delete an item of some open order that the user has created 
 const removeFromCart = async (req, res) => {
+    // #swagger.summary = 'deleta um item de um pedido que está aberto (apenas para clientes).'
     let item_id = req.params.id;
     let {id} = req.user;
 
@@ -232,6 +242,7 @@ const removeFromCart = async (req, res) => {
 
 // Update the item data of an open order that the user has created
 const updateItem = async (req, res) => {
+    // #swagger.summary = 'Atualiza o item de um pedido pelo id ainda não concluído (apenas para clientes).'
     let { quantity } = req.body;
     let item_id = req.params.id;
     let { id } = req.user;
@@ -257,8 +268,9 @@ const updateItem = async (req, res) => {
     }
 };
 
-// Return the items of some close order and the total 
+// Return the items of some order and the total 
 const getReciept = async (req, res) => {
+    // #swagger.summary = 'Retorna os items de um pedido e o valor total da compra (apenas para clientes).'
     let order_id = req.params.id;
 
     try {
@@ -286,6 +298,25 @@ const getReciept = async (req, res) => {
     }
 };
 
+const getAmountOfOrders = async (req, res) => {
+    // #swagger.summary = 'Retorna os pedidos e o total de pedidos que o cliente já realizou (apenas para clientes).'
+    try {
+        let id_customer = req.user.id;
+        let {id} = req.params;
+        let {page, limit} = req.query
+        if (id_customer == id) {
+            let orders = await OrderDAO.getByCustomer(id, page, limit);
+        res.status(200).json({orders, amountOfOrders: orders.length});
+        }
+        else {
+            res.status(403).json({msg: "Forbidden"})
+        }
+        
+    } catch (error) {
+        res.status(500).json(error);
+    }
+};
+
 
 
 module.exports = {
@@ -300,5 +331,6 @@ module.exports = {
     addToCart,
     removeFromCart,
     updateItem,
-    getReciept
+    getReciept, 
+    getAmountOfOrders
 };
