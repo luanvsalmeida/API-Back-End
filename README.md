@@ -41,7 +41,7 @@ Este projeto consiste no desenvolvimento de uma API RESTful para gerenciar uma l
 
 1. **Clone o repositório**:
    ```bash
-   git clone <URL_DO_REPOSITORIO>
+   git clone https://github.com/luanvsalmeida/API-Back-End.git
    ```
 
 2. **Instale as dependências**:
